@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% filename: Computer_Asignment_4_Matlab.m                       %%%
+%%% filename: AM_and_Demod_Matlab.m                               %%%
 %%% Author: Tom Painadath                                         %%% 
 %%% Description: Extracts 5 seconds of audio from two audio file, %%%
 %%%              Amplitude modulate them and input to a circuit   %%%
