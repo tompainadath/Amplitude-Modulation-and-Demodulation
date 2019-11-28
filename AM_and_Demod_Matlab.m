@@ -78,17 +78,19 @@ carrier_signal_1 = transpose(carrier_signal_1);  %transpose the carrier signal 1
 amplitude_modulation_1 = (carrier_signal_1) .* (upsampled_audio_1);  %dot multiply the carrier signal 1 with upsampled audio 1
 subplot(1, 3, 1);  %place the plot in row 1 column 1
 myFFT(amplitude_modulation_1, carrier_frequency_1);  %produce myFFT plot for the amplitude modulated audio_1
+xlabel('audio1 Modulated');  %label x-axis
 
 carrier_signal_2 = cos(2*pi*carrier_frequency_2*time_vector_carrier_signal);  %%define the carrier signal 2
 carrier_signal_2 = transpose(carrier_signal_2);  %transpose the carrier signal 2
 amplitude_modulation_2 = (carrier_signal_2) .* (upsampled_audio_2);  %dot multiply the carrier signal 2 with upsampled audio 2
 subplot(1, 3, 2);  %place the plot in row 1 column 2
 myFFT(amplitude_modulation_2, carrier_frequency_2);  %produce myFFT plot for the amplitude modulated audio_1
+xlabel('audio2 Modulated');  %label x-axis
 
 amplitude_modulation = amplitude_modulation_1+amplitude_modulation_2;  %add both amplitude signals
 subplot(1, 3, 3);  %place the plot in row 1 column 3
 myFFT(amplitude_modulation, upsample_frequency);  %produce myFFt plot for the added amplitude modulated signals
-
+xlabel('Combined Modulated');
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% save the modulated data in a multisim readable text file %%%
@@ -99,12 +101,35 @@ data = [time_vector_carrier_signal amplitude_modulation];  %assign the columns i
 save ('myFile.txt', 'data', '-ascii');  %save the data on to a multisim readable .txt file
 
 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Bode plot of the LC circuit  %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+C = 1e-6;  %set the value for capacitor
+L1 = 63e-6;  %set the value for inductor in circuit 1
+L2 = 28e-6;  %set the value for inductor in circuit 2
+H1 = tf(L1,[(L1*C) 0 1]);  %define transfer function for LC circuit 1
+figure(2);  %new figure
+subplot(1, 2, 1);  %place the plot in first row first column
+bode(H1);  %plot bode diagram
+xlabel('Bode Carrier 1 LC circuit');  %label the x-axis
+H2 = tf(L2,[(L2*C) 0 1]);  %define transfer function for LC circuit 2
+subplot(1, 2, 2);  %place the plot in first row second column
+bode(H2);  %plot bode diagram
+xlabel('Bode Carrier 2 LC circuit');  %label the x-axis
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% load the demodulated audio signals and play them %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 [demodulated_audio_1, new_sampling_frequency_1] = lvm_import('audio1_demodulated.lvm');  %import the demodulated audio_1 signal and it's sampling frequency
-soundsc(demodulated_audio_1, new_sampling_frequency_1);  %play the demodulated audio_1
+%soundsc(demodulated_audio_1, new_sampling_frequency_1);  %play the demodulated audio_1
+figure(3);  %new figure
+subplot(1, 2, 1);  %place the plot in row one column one
+myFFT(demodulated_audio_1, sampling_frequency_1);  %create Fast Fourier Transform plot
+xlabel('audio1 demodulated'); %label x-axis
 
 [demodulated_audio_2, new_sampling_frequency_2] = lvm_import('audio2_demodulated.lvm');  %import the demodulated audio_2 signal and it's sampling frequency
 %soundsc(demodulated_audio_2, new_sampling_frequency_2);  %play the demodulated audio_1
+subplot(1, 2, 2);  %place the plot in row one column two
+myFFT(demodulated_audio_2, sampling_frequency_2);  %create Fast Fourier Transform plot
+xlabel('audio2 demodulated');  %label x-axis
